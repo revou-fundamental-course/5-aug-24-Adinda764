@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator BMI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"], input[type="radio"] {
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        button {
+            background-color: #5bc0de;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            flex: 1;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #bmiValue {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        #bmiCategory {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .btn-consult, .btn-register, #backToForm {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            background-color: #5bc0de;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator BMI</h1>
+        <div id="inputForm">
+            <form id="bmiForm">
+                <div class="form-group">
+                    <label>Jenis Kelamin:</label>
+                    <input type="radio" name="gender" value="pria" checked> Pria
+                    <input type="radio" name="gender" value="wanita"> Wanita
+                </div>
+                <div class="form-group">
+                    <label for="weight">Berat Badan (kg):</label>
+                    <input type="number" id="weight" required>
+                </div>
+                <div class="form-group">
+                    <label for="height">Tinggi badan (cm):</label>
+                    <input type="number" id="height" required>
+                </div>
+                <div class="button-group">
+                    <button type="submit">Hitung BMI</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="result" style="display: none;">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('bmiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value) / 100; // convert cm to m
+            const bmi = weight / (height * height);
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <h2>Hasil Perhitungan BMI</h2>
+                <div id="bmiValue">BMI: ${bmi.toFixed(1)}</div>
+                <div id="bmiCategory"></div>
+                <p id="advice"></p>
+                <p><strong>BMI tidak sepenuhnya mewakili diagnosis menyeluruh dari kesehatan tubuh dan resiko penyakit seseorang. Anda perlu konsultasi lebih lanjut mengenai resiko dan kekhawatiran Anda terkait dengan berat badan Anda.</strong></p>
+                <a href="#" class="btn-consult">Konsultasi Dokter Via Aplikasi</a>
+                <a href="#" class="btn-register">Registrasi Online Sekarang</a>
+                <button id="backToForm">Hitung Ulang</button>
+            `;
+            
+            let category, advice, color;
+            if (bmi < 18.5) {
+                category = "Kekurangan berat badan";
+                advice = "Anda memiliki berat badan kurang. Cara terbaik untuk menaikkan berat badan adalah dengan menambah asupan kalori dan protein.";
+                color = "#F5DEB3";
+            } else if (bmi >= 18.5 && bmi < 25) {
+                category = "Normal (ideal)";
+                advice = "Anda memiliki berat badan normal. Pertahankan pola makan dan gaya hidup sehat Anda.";
+                color = "#90EE90";
+            } else if (bmi >= 25 && bmi < 30) {
+                category = "Kelebihan berat badan";
+                advice = "Anda memiliki berat badan berlebih. Cara terbaik untuk menurunkan berat badan adalah dengan mengatur kalori makanan yang dikonsumsi dan berolahraga.";
+                color = "#FFA500";
+            } else {
+                category = "Kegemukan (Obesitas)";
+                advice = "Anda memiliki berat badan sangat berlebih (obesitas). Anda dianjurkan untuk menurunkan berat badan hingga batas normal. Konsultasikan dengan dokter untuk program penurunan berat badan yang aman.";
+                color = "#FF0000";
+            }
+            
+            document.getElementById('bmiValue').style.color = color;
+            document.getElementById('bmiCategory').textContent = `Status: ${category}`;
+            document.getElementById('advice').textContent = advice;
+            
+            document.getElementById('inputForm').style.display = 'none';
+            resultDiv.style.display = 'block';
+
+            document.getElementById('backToForm').addEventListener('click', function() {
+                document.getElementById('inputForm').style.display = 'block';
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('bmiForm').reset();
+            });
+        });
+    </script>
+</body>
+</html>
